@@ -1,0 +1,21 @@
+{% block content %}
+
+<form method="get">
+  <input type="text" name="keyword" placeholder="Search...">
+  
+  <button type="submit">Search</button>
+  {{ myFilter.form }}
+</form>
+
+{% if dossiers %}
+    <h2>Dossiers</h2>
+    <ul>
+        {% for occupant_name in occupant_names %}
+        <li>{{ occupant_name.0 }} {{ occupant_name.1 }}      <a  href="{% url 'chat:Occupant_settings'  occupant_name.2   %}">Ajouter  </a>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+<th scope="row" colspan="10">No results found.</th>
+{% endif %}
+{% endblock %}

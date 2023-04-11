@@ -1,0 +1,7 @@
+<form action="{% url 'chat:Occupant_settings' item  %}" method="POST">
+				
+    {% csrf_token %}
+    <a class="btn btn-warning" href="{% url 'chat:home' %}">Cancel</a>
+
+    <input class="btn btn-danger" type="submit" name="Confirm">
+</form>

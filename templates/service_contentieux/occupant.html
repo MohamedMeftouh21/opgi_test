@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Webpage</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <h1>service_contentieux </h1>
+  <strong>oc_id </strong>  {{notifications.oc_id}}</p>
+ <strong>  nom_oc :  </strong>  {{notifications.nom_oc}}</p>
+ <strong>  prenom_oc :  </strong>  {{notifications.prenom_oc}}</p>
+ <strong>  date_naiss :  </strong>  {{notifications.date_naiss}}</p>
+ <strong>  lieu_naiss :  </strong>  {{notifications.lieu_naiss}}</p>
+ <strong>  created_at :  </strong>  {{notifications.created_at}}</p>
+
+ <span ><a  class="hello-msg" href="{% url 'chat:generate_pdf' notifications.oc_id %}">pdf</a></span>
+ <span ><a  class="hello-msg" href="{% url 'chat:Occupant_settings' notifications.oc_id %}">Occupant_settings</a></span>
+
+ {% for contrat in contrats %}
+ <p>Contrat {{ contrat.id }}:</p>
+ <ul>
+   <li>Date: {{ contrat.date_cnt }}</li>
+   <li>Loyer: {{ contrat.loyer }}</li>
+   <!-- add more fields here as desired -->
+ </ul>
+{% endfor %}
+ 
+
+
+  
+</body>
+</html>
