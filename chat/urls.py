@@ -6,7 +6,6 @@ from . import views
 app_name = 'chat'
 
 urlpatterns = [
-    path('' ,views.home, name='home' ),
         path('Occupant/<str:pk>/',views.OccupantDetailView,name="Occupant"),
             path('post_confirmation/<str:pk>/' ,views.post_confirmation, name='post_confirmation' ),
     path('add_service_contentieux_dossier/<str:pk>/', views.add_service_contentieux_dossier, name='add_service_contentieux_dossier'),

@@ -1,7 +1,19 @@
+
+{% extends '../opgi_system/layout.html' %}
+{% block content %}
+{% load static %}
+<div class="row notification-container">
+    <h1>terminer</h1>
+      <a href="{% url 'chat:OccupantDetailView'  item%}">  voir plus</a>
+    
+
 <form action="{% url 'chat:Occupant_settings' item  %}" method="POST">
 				
     {% csrf_token %}
-    <a class="btn btn-warning" href="{% url 'chat:home' %}">Cancel</a>
+    <a class="btn btn-warning" href="{% url 'home' %}">Cancel</a>
 
     <input class="btn btn-danger" type="submit" name="Confirm">
 </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends '../opgi_system/layout.html' %}
+{% block content %}
+{% load static %}
+    <h1>Montant Mensuel Updates Anne</h1>
+<p>Unit: {{ unit }}</p>
+<p>Annee: {{ anne }}</p>
+
+
+
+  <h1>Montant Mensuel Data for {{ unit }} - {{ anne }}</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Total of Month</th>
+        <th>Total</th>
+        <th>Percentage  </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for data in data_montant_mensuel %}
+      <tr>
+        <td>{{ data.mois }}</td>
+        <td>{{ data.total_of_month }}</td>
+        <td>{{ data.total }}</td>
+        <td>{{ data.percentage }}%</td>
+      {% endfor %}
+      <tr>
+      <td>All </td>
+      <td>  {{ total_all_months }}</td>
+
+    </tr>
+
+
+    </tbody>
+  </table>
+  <script>
+  
+    var socket = new WebSocket('ws://localhost:8000/ws/montant_mensuel_updates_anne/{{ unit }}/{{ anne }}/' );
+
+    socket.onmessage = function(e) {
+      var data = JSON.parse(e.data);
+      if (data.type == 'montant_mensuel_data') {
+        updateTable(data.data_montant_mensuel);
+      }
+    };
+
+    function updateTable(data) {
+      var tbody = document.getElementsByTagName('tbody')[0];
+      while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+      }
+      for (var i = 0; i < data.length; i++) {
+        var row = document.createElement('tr');
+        var mois = document.createElement('td');
+        mois.innerText = data[i].mois;
+        var total_of_month = document.createElement('td');
+        total_of_month.innerText = data[i].total_of_month;
+        var total = document.createElement('td');
+        total.innerText = data[i].total;
+        var percentage = document.createElement('td');
+        percentage.innerText = data[i].percentage + '%';
+        row.appendChild(mois);
+        row.appendChild(total_of_month);
+        row.appendChild(total);
+        row.appendChild(percentage);
+        tbody.appendChild(row);
+      }
+    }
+  </script>
+  {% endblock %}

@@ -13,7 +13,9 @@ class wilaya(models.Model):
    def __str__(self):
             return self.lib_wilaya
 
-
+   class Meta:
+        db_table = 'data_wilaya'
+        
 class Unite(models.Model):
         lib_unit = models.CharField(max_length=120)
         wilaya = models.ForeignKey(wilaya, on_delete=models.SET)
@@ -21,6 +23,8 @@ class Unite(models.Model):
 
         def __str__(self):
             return self.lib_unit
+        class Meta:
+           db_table = 'data_unite'
 
 class Cite(models.Model):
               lib_Cite = models.CharField(max_length=120)
@@ -30,6 +34,8 @@ class Cite(models.Model):
 
               def __str__(self):
                  return self.lib_Cite
+              class Meta:
+                  db_table = 'data_cite'
 
 class Batiment (models.Model):
            lib_Batiment = models.CharField(max_length=120)
@@ -40,6 +46,7 @@ class Batiment (models.Model):
 
            def __str__(self):
                  return self.lib_Batiment
+          
 
 class Occupant (models.Model):
        oc_id  = models.PositiveIntegerField(unique=True)
@@ -52,6 +59,8 @@ class Occupant (models.Model):
 
        def __str__(self):
                  return self.nom_oc
+       class Meta:
+                  db_table = 'data_occupant'
 
 class Contrat(models.Model):
     occupant = models.ForeignKey(Occupant, on_delete=models.SET)
@@ -67,6 +76,8 @@ class Contrat(models.Model):
   #siglaler add to changer total 
     def __str__(self):
                  return self.occupant.nom_oc
+    class Meta:
+                  db_table = 'data_contrat'
 
  
 @receiver(post_save, sender=Contrat)
@@ -101,6 +112,8 @@ class Logement (models.Model):
         created_at = models.DateTimeField(auto_now_add=True)
         def __str__(self):
                  return self.contrat.occupant.nom_oc
+        class Meta:
+                  db_table = 'data_logement'
 
 class Consultation (models.Model):
                 logement = models.ForeignKey(Logement, on_delete=models.SET)
@@ -113,13 +126,15 @@ class Consultation (models.Model):
                 
                 def __str__(self):
                     return self.occupant.nom_oc
+                class Meta:
+                  db_table = 'data_consultation'
                
                 
 
-
+        
      
 
+
+        
        
-     
-    
      

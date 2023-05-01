@@ -1,34 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My Webpage</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
-  <h1>service_contentieux </h1>
+{% extends '../opgi_system/layout.html' %}
+{% block content %}
+{% load static %}
+{% if dossiers %}
+
+
+<span ><a  class="hello-msg" href="{% url 'chat:Occupant_settings' notifications.oc_id %}">Occupant settings</a></span>
+
+{% endif %}
+</br>
+</br>
+
+  <h3>Occupant <a href="{% url 'chat:generate_pdf' notifications.oc_id %}">pdf</a>
+</h3> 
   <strong>oc_id </strong>  {{notifications.oc_id}}</p>
- <strong>  nom_oc :  </strong>  {{notifications.nom_oc}}</p>
- <strong>  prenom_oc :  </strong>  {{notifications.prenom_oc}}</p>
- <strong>  date_naiss :  </strong>  {{notifications.date_naiss}}</p>
- <strong>  lieu_naiss :  </strong>  {{notifications.lieu_naiss}}</p>
+ <strong>  Nom :  </strong>  {{notifications.nom_oc}}</p>
+ <strong>  Prenom :  </strong>  {{notifications.prenom_oc}}</p>
+ <strong>  date naissance :  </strong>  {{notifications.date_naiss}}</p>
+ <strong>  Lieu de naissance:  </strong>  {{notifications.lieu_naiss}}</p>
  <strong>  created_at :  </strong>  {{notifications.created_at}}</p>
 
- <span ><a  class="hello-msg" href="{% url 'chat:generate_pdf' notifications.oc_id %}">pdf</a></span>
- <span ><a  class="hello-msg" href="{% url 'chat:Occupant_settings' notifications.oc_id %}">Occupant_settings</a></span>
+
 
  {% for contrat in contrats %}
- <p>Contrat {{ contrat.id }}:</p>
- <ul>
-   <li>Date: {{ contrat.date_cnt }}</li>
-   <li>Loyer: {{ contrat.loyer }}</li>
+ <h3>Contrat</h3>
+</br>
+ <strong>Date:  </strong> {{ contrat.date_cnt }}</p>
+Loyer: {{ contrat.loyer }}</p>
+  Charge: {{ contrat.charge }}</p>
+   Loyer: {{ contrat.loyer }}</p>
+date_strt_loyer: {{ contrat.date_strt_loyer }}</p>
+
    <!-- add more fields here as desired -->
  </ul>
 {% endfor %}
- 
 
 
-  
-</body>
-</html>
+{% endblock %}

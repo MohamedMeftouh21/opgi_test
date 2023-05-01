@@ -25,14 +25,26 @@ from .models import Service_contentieux_dossier
 from .forms import SearchForm
 from data.models import  *
 from .filters import *
+from django.views.decorators.cache import cache_control
+from django import template
+
+
+
+
+register = template.Library()
+
+@register.filter(name='in_group')
+def in_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()
+
+
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['service_contentieux'])
-def home(request):
-    notifications = Notification.objects.filter(read=False).order_by('-created_at')
-    return render(request, 'index.html', {'notifications': notifications})
-
-
-
 #@require_http_methods(["POST"])
 def post_confirmation(request,pk):
       # Check if confirmation has already been successful
@@ -49,10 +61,12 @@ def post_confirmation(request,pk):
             # Redirect the user to the home page
             return redirect('chat:Occupant',pk=pk)
 
-    return render(request, 'confirm_password.html')
+    return render(request, 'service_contentieux/confirm_password.html')
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_contentieux'])
 def add_service_contentieux_dossier(request,pk):
     if request.method == 'POST':
         created_by = request.POST['created_by']
@@ -63,7 +77,9 @@ def add_service_contentieux_dossier(request,pk):
         
         return render(request, 'occupant.html')   
     
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_contentieux'])
 def create_dossier(request,pk):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -80,19 +96,25 @@ def create_dossier(request,pk):
             return JsonResponse({'success': False, 'message': 'Username does not match'})
     else:
         return render(request, 'occupant.html')
-    
+
+
+@login_required(login_url='login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def notifications(request):
       #sercher par non read
       notifications = Notification.objects.filter(read=False).order_by('-created_at')
-      return render(request, 'service_contentieux/notifications.html', {'notifications': notifications})
+      return render(request, 'service_contentieux/notification/notification.html', {'notifications': notifications})
 
 @login_required(login_url='login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
 def accepter (request, pk):
- if   Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk, status='active').exists() and  Notification.objects.filter(message=pk,read =False).exists():
-            return redirect('/')
+ if   Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk, status='active').exists() and   Notification.objects.filter(message=pk,read =False).exists():
+            return redirect('home')
 
- else:
+ elif    Notification.objects.filter(message=pk,read =False).exists():
+
     if request.method == 'POST':
          if   Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk, status='terminer').exists() :
                          Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk).update(status ='active')
@@ -111,15 +133,20 @@ def accepter (request, pk):
 
     context = {'item':pk}
     return render(request, 'service_contentieux/accepter.html', context)
+ else: 
+        return redirect('home')
+
  
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['service_contentieux'])
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def OccupantDetailView (request,pk):
 
      if  Notification.objects.filter(message=pk).exists():
 
-          
+          dossiers = not Service_contentieux_dossier.objects.filter(dossier=pk,status='terminer')
           notifications = Occupant.objects.get(oc_id=pk)
           occupant = Occupant.objects.get(id=notifications.id) 
           contrats = Contrat.objects.filter(occupant=occupant)
@@ -127,12 +154,17 @@ def OccupantDetailView (request,pk):
           context = {
                 'notifications': notifications,
                 'contrats':contrats,
+                'dossiers':dossiers,
             }
           return render(request, 'service_contentieux/occupant.html',context)
 
      else:
-        return redirect('/')
-  
+        return redirect('home')
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_contentieux'])
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def occupant (request, pk):
          if not request.session.get('has_occupant', False):
                  return redirect('chat:Occupant',pk=pk)
@@ -145,6 +177,9 @@ def occupant (request, pk):
 
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_contentieux'])
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
 def service_contentieux(request):
     keyword = request.GET.get('keyword')
@@ -193,6 +228,8 @@ def service_contentieux(request):
 
     return render(request, 'service_contentieux/service_contentieux.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_contentieux'])
 def search_notification(request):
     search_notification = None  # Initialize to None
 
@@ -209,27 +246,32 @@ def search_notification(request):
         'search_notification': search_notification,
 
     }
-    return render(request, 'service_contentieux/notifications.html', context)
+    return render(request, 'service_contentieux/notification/notification.html', context)
 
     
 #  
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_contentieux'])
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def Occupant_settings(request,pk):
         
     if   Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk, status='terminer').exists() :
-            return redirect('/')
+                 return redirect('chat:OccupantDetailView',pk=pk)
 
     else:
         if request.method == 'POST':
            Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk).update(status ='terminer')
            
-           return redirect('/')
+           return redirect('home')
 
          
         context = {'item':pk}
 
         return render(request, 'service_contentieux/Occupant_settings.html',context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_contentieux'])
 def generate_pdf(request, oc_id):
     occupant = get_object_or_404(Occupant, oc_id=oc_id)
     template_path = 'service_contentieux/pdf_template.html'

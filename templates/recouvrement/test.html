@@ -1,0 +1,80 @@
+{% extends '../opgi_system/layout.html' %}
+{% block content %}
+{% load static %}
+<script>
+
+        var socket = new WebSocket('ws://localhost:8000/ws/montant_mensuel_updates/{{ unit }}/' );
+
+        socket.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            if (data.type === 'montant_mensuel_updates') {
+                var table = $('#montant_mensuel_table');
+                table.empty();
+                table.append('<tr>' +
+                    '<th>ID</th>' +
+                    '<th>Unit</th>' +
+                    '<th>Month</th>' +
+                    '<th>Year</th>' +
+                    '<th>Total</th>' +
+                    '<th>Total of Month</th>' +
+                    '<th>Percentage</th>' +
+                    '</tr>'
+                );
+                $.each(data.data_montant_mensuel_updates, function(index, montant_mensuel) {
+                    var row = '<tr>' +
+                        '<td>' + montant_mensuel.id + '</td>' +
+                        '<td>' + montant_mensuel.unite + '</td>' +
+                        '<td>' + montant_mensuel.mois + '</td>' +
+                        '<td>' + montant_mensuel.annee + '</td>' +
+                        '<td>' + montant_mensuel.total + '</td>' +
+                        '<td>' + montant_mensuel.total_of_month + '</td>' +
+                        '<td>' + montant_mensuel.percentage + '</td>' +
+                        '</tr>';
+                    table.append(row);
+                });
+            }
+        };
+    </script>
+    
+</head>
+<h1>{{ unit }}</h1>
+{% if years %}
+  <ul>
+  {% for year in years %}
+  <td><a  href="{% url 'recouvrement:montant_mensuel_updates_anne' unit year %}"> {{year }} </a></td>
+
+  {% endfor %}
+  </ul>
+{% else %}
+{% endif %}
+
+<body>
+    <table id="montant_mensuel_table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Unit</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Total</th>
+                <th>Total of Month</th>
+                <th>percentage</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for montant in montants %}
+            <tr>
+                <td>{{ montant.id }}</td>
+                <td>{{ montant.unite.lib_unit }}</td>
+                <td>{{ montant.mois }}</td>
+                <td>{{ montant.annee }}</td>
+                <td>{{ montant.total }}</td>
+                <td>{{ montant.total_of_month }}</td>
+                <td>{{ montant.percentage }}</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}

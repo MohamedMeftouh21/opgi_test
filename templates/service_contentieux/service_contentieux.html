@@ -1,17 +1,30 @@
+{% extends '../opgi_system/layout.html' %}
 {% block content %}
+{% load static %}
+<div class="card-body">
 
-<form method="get">
-  <input type="text" name="keyword" placeholder="Search...">
-  
-  <button type="submit">Search</button>
-  {{ myFilter.form }}
+<form method="get" >
+  <div class="d-flex align-items-center">
+    <input class="form-control mr-sm-1" type="text" name="keyword" placeholder="Search...">
+    <div style="margin-bottom: 20px; margin-left: 20px;">    {{ myFilter.form }}
+    </div>
+
+  </div>
+
+
+  <button class="btn btn-outline-success my-2 my-sm-0"  type="submit">Search</button>
+
 </form>
+</div>
 
 {% if dossiers %}
+
     <h2>Dossiers</h2>
     <ul>
         {% for occupant_name in occupant_names %}
+
         <li>{{ occupant_name.0 }} {{ occupant_name.1 }}      <a  href="{% url 'chat:Occupant_settings'  occupant_name.2   %}">Ajouter  </a>
+
         </li>
         {% endfor %}
     </ul>
