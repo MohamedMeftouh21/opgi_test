@@ -256,12 +256,9 @@ def search_notification(request):
 
 def Occupant_settings(request,pk):
         
-    if   Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk, status='terminer').exists() :
-                 return redirect('chat:OccupantDetailView',pk=pk)
-
-    else:
+    
         if request.method == 'POST':
-           Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk).update(status ='terminer')
+           Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk).delete()
            
            return redirect('home')
 
