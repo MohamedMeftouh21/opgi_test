@@ -104,9 +104,11 @@
                             href="{% url 'recouvrement:montant_mensuel'%}" aria-expanded="false"><i
                                 class="mdi mdi-logout m-r-5 m-l-5"></i><span class="hide-menu">Constatation</span></a></li>
                     {% endif %}
-
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                        href="{% url 'search:recherche'%}" aria-expanded="false"><i
+                            class="mdi mdi-magnify"></i><span class="hide-menu">search</span></a></li>  
             <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="#" aria-expanded="false"><i
+                    href="{% url 'accounts:profile' %}" aria-expanded="false"><i
                         class="ti-user m-r-5 m-l-5"></i><span class="hide-menu">Profile</span></a></li>
             <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                     href="{% url 'accounts:logout'%}" aria-expanded="false"><i
@@ -118,50 +120,7 @@
     </div>
 
 </aside>
-<script>
-    const socket1 = new WebSocket('ws://localhost:8000/ws/chef_service/' );
-    socket1.onopen = function (e) {
-      console.log('Connection established');
-    };
-  
-    socket1.onmessage = function(event) {
-      var data = JSON.parse(event.data);
-      if (data.type === 'chef_service') {
-        const notification_count_recouvrement = data.count;
-        const notification_count_recouvrement_2 = data.count;
 
-        document.getElementById('notification_count_recouvrement').innerHTML = notification_count_recouvrement;
-        document.getElementById('notification_count_recouvrement').style.display = 'inline-block'; // display the span element
-
-        document.getElementById('notification_count_recouvrement_2').innerHTML = notification_count_recouvrement_2;
-        document.getElementById('notification_count_recouvrement_2').style.display = 'inline-block';
-
-      
-          var notificationList = document.querySelector('#notification-list');
-          notificationList.innerHTML = '';
-          for (var i = 0; i < data.notifications.length; i++) {
-              var notification = data.notifications[i];
-              var tr = document.createElement('tr');
-              var td1 = document.createElement('td');
-              var a = document.createElement('a');
-              const id = notification.id;
-              const url = "/recouvrement/accepter/" + encodeURIComponent(id.toString()) + "/";
-              a.href = url;
-              a.innerHTML = "Ajouter";
-              td1.appendChild(a);
-              var td2 = document.createElement('td');
-              td2.textContent = notification.unite +  ' - '+ notification.created_at ;
-              tr.appendChild(td1);
-              tr.appendChild(td2);
-              notificationList.appendChild(tr);
-          }
-      }
-  }
-    
-  socket1.onclose = function (e) {
-      console.log('Connection closed');
-    };
-  </script>
 <script>
     const socket2 = new WebSocket('ws://localhost:8000/ws/test/' );
     socket2.onopen = function (e) {
@@ -169,10 +128,10 @@
     };
   
     socket2.onmessage = function(event) {
-      var data = JSON.parse(event.data);
-      if (data.type === 'notifications') {
-          const count = data.count;
-          const count_2 = data.count;
+      var data2 = JSON.parse(event.data);
+      if (data2.type === 'notifications') {
+          const count = data2.count;
+          const count_2 = data2.count;
           if (count > 0) { // only display if count is greater than 0
 
           document.getElementById('notification-count').innerHTML = count;
@@ -188,8 +147,8 @@
         }
           var notificationList = document.querySelector('#notification-list');
           notificationList.innerHTML = '';
-          for (var i = 0; i < data.notifications.length; i++) {
-              var notification = data.notifications[i];
+          for (var i = 0; i < data2.notifications.length; i++) {
+              var notification = data2.notifications[i];
               var tr = document.createElement('tr');
               var td1 = document.createElement('td');
               var a = document.createElement('a');

@@ -36,6 +36,7 @@ urlpatterns = [
         path('service_contentieux/', include('chat.urls')),
         path('accounts/', include('accounts.urls')),
         path('recouvrement/', include('recouvrement.urls')),
+    path('search/',include("search.urls")),
 
 ]
 if settings.DEBUG:

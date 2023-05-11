@@ -1,4 +1,5 @@
 {% load static %}
+{% load myapp_tags %}
 
 <!doctype html>
 <html lang="en">
@@ -29,8 +30,14 @@
 
     <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full"
         data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
+        {% if user|is_member_of_group:'service_contentieux' %}
 
         {% include '../opgi_system/nav.html' %}
+        {% elif user|is_member_of_group:'service_recouvrement' %} 
+        {% include '../opgi_system/nav2.html' %}
+
+        {% endif %}
+
         <div class="page-wrapper">
             {% include '../opgi_system/breadcrumb.html' %}
             

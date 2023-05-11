@@ -1,34 +1,22 @@
-
-  {% extends '../opgi_system/layout.html' %}
   {% block content %}
   {% load static %}
-  <style>
-    th {
-      padding: 10px; /* adds 10 pixels of padding to all sides of each th element */
-    }
-    td{
-      padding: 10px; /* adds 10 pixels of padding to all sides of each th element */
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    }
-  </style>
-  <table>
+    <table>
       <thead>
         <tr>
           <th>Unit</th>
-               <th>Total</th>
+          <th>Total</th>
           <th>Total of Month</th>
-       
           <th>Percentage</th>
-         
         </tr>
       </thead>
       <tbody id="data">
         {% for montant in montants %}
         <tr>
-            <td><a  href="{% url 'recouvrement:montant_mensuel_updates' montant.unite %}"> {{ montant.unite }} </a></td>
+          <td><a  href="{% url 'recouvrement:montant_mensuel_updates' montant.unite %}"> {{ montant.unite }} </a></td>
 
           <td>{{ montant.total }}</td>
-          
           <td>{{ montant.total_of_month }}</td>
           <td>{{ montant.percentage }}%</td>
         </tr>
@@ -44,8 +32,7 @@
    
     </table>
     <script>
-      const socket = new WebSocket('ws://localhost:8000/ws/montant_mensuel/' );
-
+      var socket = new WebSocket("ws://localhost:8000/ws/montant_mensuel/");
 
       socket.onmessage = function(event) {
         var data = JSON.parse(event.data);
@@ -61,9 +48,10 @@
           var totalOfMonthForUnit = unitData[0]["total_of_month_for_unit"];
           var percentageForUnit = unitData[0]["percentage_for_unit"];
           var link = "/recouvrement/montant_mensuel_updates/" + unite + "/";
+
           var html = "<tr>";
             html += "<td><a href='" + link + "'>" + unite + "</a></td>";
-            html += "<td>" + totalForUnit + "</td>";
+          html += "<td>" + totalForUnit + "</td>";
           html += "<td>" + totalOfMonthForUnit + "</td>";
           html += "<td>" + percentageForUnit + "%</td>";
           html += "</tr>";
@@ -83,4 +71,4 @@
         $("#data").append(html);
       };
     </script>
-	  {% endblock %}
+    {% endblock %}

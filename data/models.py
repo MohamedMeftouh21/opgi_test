@@ -131,7 +131,29 @@ class Consultation (models.Model):
                
                 
 
-        
+                def calculer_dette(self):
+                        contrat_values = Contrat.objects.values().get(id=self.occupant.id)
+                        diff = self.created_at - contrat_values['date_strt_loyer']
+                        mois_entiers = int(diff.total_seconds() / 2628000)
+                        montant_dette = contrat_values['total_of_month'] * (mois_entiers)
+                        paye = contrat_values['total_of_month'] * self.mois
+                        montant_dette = paye - montant_dette
+                        
+                        if mois_entiers <= 0  or self.mois > mois_entiers:
+                            mois_entiers = 0
+                            montant_dette = 0
+                        
+                        self.montant_dette = abs(montant_dette)
+
+                        if montant_dette == 0:
+                                self.status = 'En règle'
+                        elif montant_dette > contrat_values['total_of_month']:
+                                 self.status = 'En dette'
+                        else:
+                                self.status = 'En dette'
+                        
+
+                        return montant_dette
      
 
 

@@ -29,6 +29,7 @@ Loyer: {{ contrat.loyer }}</p>
   Charge: {{ contrat.charge }}</p>
    Loyer: {{ contrat.loyer }}</p>
 date_strt_loyer: {{ contrat.date_strt_loyer }}</p>
+<th scope="row"><a type="button" class="btn btn-outline-info" href="{% url 'search:occupant_detail' contrat.occupant.id %}">Voir</a></th>
 
    <!-- add more fields here as desired -->
  </ul>

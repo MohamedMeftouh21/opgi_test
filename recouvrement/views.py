@@ -103,7 +103,10 @@ def generate_pdf(request, pk):
 
 
  ##
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
 def montant_mensuel(request):
     now = datetime.datetime.now()
     mois_actuel = now.month
@@ -131,8 +134,14 @@ def montant_mensuel(request):
 
     return render(request, 'recouvrement/montant_mensuel.html', context)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
 def montant_mensuel_updates(request, unit):
+
+ if    Unite.objects.filter(lib_unit=unit).exists():
+
     now = datetime.datetime.now()
     mois_actuel = now.month
     annee_actuelle = now.year
@@ -146,8 +155,18 @@ def montant_mensuel_updates(request, unit):
 
     context = {"montants": montants, "unit": unit, "years": years}
     return render(request, 'recouvrement/test.html', context)
+ else :
+                                                     return redirect('home')
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
 def montant_mensuel_updates_anne(request, unit, anne):
+ 
+ if    Unite.objects.filter(lib_unit=unit).exists() and MontantMensuel.objects.filter(annee=anne).exists() :
+
     # Get the distinct months for the given year and unit
     mois = MontantMensuel.objects.filter(unite__lib_unit=unit, annee=anne).order_by('mois').values_list('mois', flat=True).distinct()
 
@@ -166,3 +185,5 @@ def montant_mensuel_updates_anne(request, unit, anne):
 
     }
     return render(request, 'recouvrement/test_anne.html', context)
+ else :
+                                                     return redirect('home')
