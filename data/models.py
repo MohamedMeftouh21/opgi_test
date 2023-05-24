@@ -15,6 +15,7 @@ class wilaya(models.Model):
 
    class Meta:
         db_table = 'data_wilaya'
+        managed = False 
         
 class Unite(models.Model):
         lib_unit = models.CharField(max_length=120)
@@ -25,6 +26,7 @@ class Unite(models.Model):
             return self.lib_unit
         class Meta:
            db_table = 'data_unite'
+           managed = False 
 
 class Cite(models.Model):
               lib_Cite = models.CharField(max_length=120)
@@ -36,6 +38,7 @@ class Cite(models.Model):
                  return self.lib_Cite
               class Meta:
                   db_table = 'data_cite'
+                  managed = False 
 
 class Batiment (models.Model):
            lib_Batiment = models.CharField(max_length=120)
@@ -46,8 +49,10 @@ class Batiment (models.Model):
 
            def __str__(self):
                  return self.lib_Batiment
+           class Meta:
+                  db_table = 'data_batiment'
+                  managed = False 
           
-
 class Occupant (models.Model):
        oc_id  = models.PositiveIntegerField(unique=True)
        nom_oc = models.CharField(max_length=120)
@@ -61,6 +66,8 @@ class Occupant (models.Model):
                  return self.nom_oc
        class Meta:
                   db_table = 'data_occupant'
+                  managed = False 
+
 
 class Contrat(models.Model):
     occupant = models.ForeignKey(Occupant, on_delete=models.SET)
@@ -78,6 +85,8 @@ class Contrat(models.Model):
                  return self.occupant.nom_oc
     class Meta:
                   db_table = 'data_contrat'
+                  managed = False 
+
 
  
 @receiver(post_save, sender=Contrat)
@@ -114,6 +123,7 @@ class Logement (models.Model):
                  return self.contrat.occupant.nom_oc
         class Meta:
                   db_table = 'data_logement'
+                  managed = False 
 
 class Consultation (models.Model):
                 logement = models.ForeignKey(Logement, on_delete=models.SET)
@@ -128,6 +138,7 @@ class Consultation (models.Model):
                     return self.occupant.nom_oc
                 class Meta:
                   db_table = 'data_consultation'
+                  managed = False 
                
                 
 

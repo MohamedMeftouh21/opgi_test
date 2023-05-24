@@ -6,7 +6,7 @@
 
 {% if is_logged_in %}
 <!-- profile.html -->
-<p> username: {{user.username}} </p>
+<p> <strong> username: <strong> {{user.username}} </p>
 <p> email: {{user.email}} </p>
 
 <p>Last Login: {{ last_login|date:"F j, Y, g:i a" }}</p>

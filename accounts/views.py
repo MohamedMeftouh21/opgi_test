@@ -41,8 +41,12 @@ def loginPage(request):
             elif Group.objects.filter(user=user, name='service_recouvrement').exists():
                 return redirect('home')
             
+            elif Group.objects.filter(user=user, name='admin').exists():
+                return redirect('admin:index')  # Redirect to the admin panel's index page
+            
             else:
-                return redirect('abcd')
+                return HttpResponse("Cannot sanitize form data")
+
         else:
             messages.error(request, 'Username OR password is incorrect')
 

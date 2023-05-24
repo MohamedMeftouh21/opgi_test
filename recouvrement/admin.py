@@ -4,3 +4,4 @@ from .models import *
  
     
 admin.site.register(Notification_chef_service) 
+admin.site.register(MontantMensuel) 

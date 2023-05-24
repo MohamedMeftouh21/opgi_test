@@ -57,7 +57,7 @@
         {% if notifications %}
           <ul>
           {% for notification in notifications %}
-            <li>{{ notification.message }} -  {{ notification.nom_oc }}- {{ notification.prenom_oc }}-{{ notification.created_at }}
+            <li>Nom  :  {{ notification.nom_oc }} | prénom : {{ notification.prenom_oc }} | created_at :{{ notification.created_at }}
               <td><a  href="{% url 'chat:accepter' notification.message %}">voir plus  </a></td>
             </li>
     

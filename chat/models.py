@@ -23,6 +23,7 @@ class Service_contentieux_settings(models.Model):
      
      class Meta:
                   db_table = 'chat_service_contentieux_settings'
+                  managed = False 
     
      
 class Notification(models.Model):
@@ -39,6 +40,7 @@ class Notification(models.Model):
         return self.message
     class Meta:
                   db_table = 'chat_notification'
+                  managed = False 
     
 class Service_contentieux_dossier(models.Model):
     STATUS_CHOICES = (
@@ -51,6 +53,7 @@ class Service_contentieux_dossier(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     class Meta:
                   db_table = 'chat_service_contentieux_dossier'
+                  managed = False 
            
 
 @receiver(post_save, sender=Notification)

@@ -14,7 +14,7 @@
     <!-- Bootstrap CSS 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     -->
- 
+   <title> OPGI - Mostaganem</title>
   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -35,6 +35,8 @@
         {% include '../opgi_system/nav.html' %}
         {% elif user|is_member_of_group:'service_recouvrement' %} 
         {% include '../opgi_system/nav2.html' %}
+        {% elif user|is_member_of_group:'admin' %} 
+        {% include '../opgi_system/nav_admin.html' %}
 
         {% endif %}
 

@@ -24,7 +24,11 @@ class MontantMensuel(models.Model):
     total_of_month = models.FloatField()
     def __str__(self):
         return f"MontantMensuel {self.unite.lib_unit} - {self.mois}/{self.annee}"
-    
+    class Meta:
+        db_table = 'recouvrement_montantmensuel'
+        managed = False 
+
+
 class Notification_chef_service(models.Model):
     unite = models.ForeignKey(Unite, on_delete=models.SET)
 
@@ -36,6 +40,9 @@ class Notification_chef_service(models.Model):
         
     def __str__(self):
         return f"MontantMensuel {self.unite.lib_unit} "
+    class Meta:
+        db_table = 'recouvrement_notification_chef_service'
+        managed = False 
     
     
 

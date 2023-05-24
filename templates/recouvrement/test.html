@@ -37,11 +37,11 @@
     </script>
     
 </head>
-<h1>{{ unit }}</h1>
+<h1> Unité : {{ unit }}</h1>
 {% if years %}
-  <ul>
+  <ul>  Les années :
   {% for year in years %}
-  <td><a  href="{% url 'recouvrement:montant_mensuel_updates_anne' unit year %}"> {{year }} </a></td>
+ <td><a  href="{% url 'recouvrement:montant_mensuel_updates_anne' unit year %}"> {{year }} </a></td>
 
   {% endfor %}
   </ul>
@@ -53,12 +53,12 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Unit</th>
-                <th>Month</th>
-                <th>Year</th>
+                <th>Unité</th>
+                <th>Mois</th>
+                <th>Année</th>
                 <th>Total</th>
-                <th>Total of Month</th>
-                <th>percentage</th>
+                <th>Total du mois   </th>
+                <th>Pourcentage</th>
 
             </tr>
         </thead>
