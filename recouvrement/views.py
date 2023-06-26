@@ -13,6 +13,8 @@ from django.http import HttpResponse
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from .models import MontantMensuel
+from dal import autocomplete
+from data.models import *
 
 import datetime
 
@@ -187,3 +189,67 @@ def montant_mensuel_updates_anne(request, unit, anne):
     return render(request, 'recouvrement/test_anne.html', context)
  else :
                                                      return redirect('home')
+
+#
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
+def chart_view(request):
+    lib_unit = request.GET.get('lib_unit')
+    mois = request.GET.get('mois')
+    annee = request.GET.get('annee')
+
+    chart_data = MontantMensuel.objects.all()
+
+    if lib_unit:
+        chart_data = chart_data.filter(unite__lib_unit=lib_unit)
+    if mois:
+        try:
+            mois = int(mois)
+            if 1 <= mois <= 12:
+                chart_data = chart_data.filter(mois=mois)
+        except ValueError:
+            pass
+    if annee:
+        try:
+            annee = int(annee)
+            chart_data = chart_data.filter(annee=annee)
+        except ValueError:
+            pass
+    chart_data = chart_data.values('unite__lib_unit', 'total', 'total_of_month').order_by('unite__lib_unit')
+
+    chart_labels = [data['unite__lib_unit'] for data in chart_data]
+    chart_values_total = [data['total'] for data in chart_data]
+    chart_values_total_of_month = [data['total_of_month'] for data in chart_data]
+
+    lib_unit_values = MontantMensuel.objects.values_list('unite__lib_unit', flat=True).distinct()
+
+    context = {
+        'chart_labels': chart_labels,
+        'chart_values_total': chart_values_total,
+        'chart_values_total_of_month': chart_values_total_of_month,
+        'selected_lib_unit': lib_unit,
+        'selected_mois': mois,
+        'selected_annee': annee,
+        'lib_unit_values': lib_unit_values,
+    }
+
+    return render(request, 'recouvrement/montantMensuel_views.html', context)
+
+
+class UniteAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Unite.objects.all()
+
+        if self.q:
+            qs = qs.filter(lib_unit__icontains=self.q)
+
+        return qs
+
+
+
+def MontantMensuel_views(request):
+            return render(request, 'recouvrement/montantMensuel_views.html')
+

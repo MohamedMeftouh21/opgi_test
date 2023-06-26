@@ -17,24 +17,24 @@ from datetime import datetime, date, timedelta
 
 # Create your models here.
 class MontantMensuel(models.Model):
-    unite = models.ForeignKey(Unite, on_delete=models.SET)
-    mois = models.PositiveIntegerField()
-    annee = models.PositiveIntegerField()
-    total = models.FloatField()
-    total_of_month = models.FloatField()
+    unite = models.ForeignKey(Unite, on_delete=models.SET,db_column='unite_id')
+    mois = models.PositiveIntegerField(db_column='mois')
+    annee = models.PositiveIntegerField(db_column='annee')
+    total = models.FloatField(db_column='total')
+    total_of_month = models.FloatField(db_column='total_of_month')
     def __str__(self):
         return f"MontantMensuel {self.unite.lib_unit} - {self.mois}/{self.annee}"
     class Meta:
         db_table = 'recouvrement_montantmensuel'
-        managed = False 
+        managed = False    
+        unique_together = ('unite','annee', 'mois')
 
 
 class Notification_chef_service(models.Model):
-    unite = models.ForeignKey(Unite, on_delete=models.SET)
+    unite = models.ForeignKey(Unite, on_delete=models.SET,db_column='unite_id')
 
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True,db_column='created_at')
+    read = models.BooleanField(default=False,db_column='read')
 
   
         
@@ -44,8 +44,6 @@ class Notification_chef_service(models.Model):
         db_table = 'recouvrement_notification_chef_service'
         managed = False 
     
-    
-
 @receiver(post_save, sender=Consultation)
 def my_model_post_save(sender, instance, created, **kwargs):
     if created:
@@ -66,60 +64,7 @@ def my_model_post_save(sender, instance, created, **kwargs):
                 montant_mensuel.save()
                  
 
-@receiver(post_save, sender=MontantMensuel)
-def montant_mensuel_saved(sender, instance, **kwargs):
-    if instance.pk is None:
-        # l'instance est nouvelle
-        print("Une nouvelle instance de MontantMensuel a été créée.")
-    else:
-        # l'instance a été mise à jour
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            "montant_mensuel_updates",
-            {
-                "type": "notify_update",
-                "message": {
-                    "type": "update",
-                    "id": instance.id,
-                    "total": instance.total,
-                    "total_of_month": instance.total_of_month,
-                }
-            }
-        )
-        print("L'instance de MontantMensuel a été mise à jour.")      
-
-@receiver(post_save, sender=MontantMensuel)
-def update_montant_mensuel_data(sender, instance, **kwargs):
-    # Create a group name for this specific unite
-    montant_mensuel_group_name = 'montant_mensuel_%s' % instance.unite.lib_unit
-    channel_layer = get_channel_layer()
-
-    # Send a message to the montant_mensuel group for this unite
-    async_to_sync(channel_layer.group_send)(
-        montant_mensuel_group_name,
-        {
-            'type': 'montant_mensuel_data',
-        }
-    )
-@receiver(post_save, sender=MontantMensuel)
-def send_montant_mensuel_update(sender, instance, **kwargs):
-    channel_layer = get_channel_layer()
-    unit = instance.unite.lib_unit
-    data = {
-        "id": instance.id,
-        "unite": instance.unite.lib_unit,
-        "mois": instance.mois,
-        "annee": instance.annee,
-        "total": instance.total,
-        "total_of_month": instance.total_of_month,
-    }
-    async_to_sync(channel_layer.group_send)(
-        f"montant_mensuel_updates_{unit}",
-        {
-            "type": "notify_update",
-            "message": data
-        }
-    )    
+    
 @receiver(post_save, sender=Consultation)
 def check_consultations_totals(sender, instance, created, **kwargs):
     if created:
@@ -169,15 +114,4 @@ def check_consultations_totals(sender, instance, created, **kwargs):
             # La date actuelle n'est pas dans les 10 derniers jours du mois
          #   print("Current date is not within the last 10 days of the month")
 
-@receiver(post_save, sender=Notification_chef_service)
-def send_notification(sender, instance, **kwargs):
- if instance:
-      channel_layer = get_channel_layer()
-      async_to_sync(channel_layer.group_send)(
-                    "chef_service",
-                      {
-                     "type": "notify_update",
-                     "message": {
-                      "unite": instance.unite.lib_unit,
-                           }
-                         }    )
+

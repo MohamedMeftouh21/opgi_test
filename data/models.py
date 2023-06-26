@@ -7,8 +7,8 @@ from asgiref.sync import async_to_sync
 import json
 class wilaya(models.Model):
 
-   lib_wilaya = models.CharField(max_length=120)
-   date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True) 
+   lib_wilaya = models.CharField(max_length=120,db_column='lib_wilaya')
+   date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True,db_column='date_joined') 
 
    def __str__(self):
             return self.lib_wilaya
@@ -18,9 +18,9 @@ class wilaya(models.Model):
         managed = False 
         
 class Unite(models.Model):
-        lib_unit = models.CharField(max_length=120)
-        wilaya = models.ForeignKey(wilaya, on_delete=models.SET)
-        date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True) 
+        lib_unit = models.CharField(max_length=120,db_column='lib_unit')
+        wilaya = models.ForeignKey(wilaya, on_delete=models.SET,db_column='wilaya_id')
+        date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True,db_column='date_joined') 
 
         def __str__(self):
             return self.lib_unit
@@ -29,10 +29,10 @@ class Unite(models.Model):
            managed = False 
 
 class Cite(models.Model):
-              lib_Cite = models.CharField(max_length=120)
-              unite = models.ForeignKey(Unite, on_delete=models.SET)
-              nb_logts = models.PositiveIntegerField()
-              date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True) 
+              lib_Cite = models.CharField(max_length=120,db_column='lib_Cite')
+              unite = models.ForeignKey(Unite, on_delete=models.SET,db_column='unite_id')
+              nb_logts = models.PositiveIntegerField(db_column='nb_logts')
+              date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True,db_column='date_joined') 
 
               def __str__(self):
                  return self.lib_Cite
@@ -41,11 +41,11 @@ class Cite(models.Model):
                   managed = False 
 
 class Batiment (models.Model):
-           lib_Batiment = models.CharField(max_length=120)
-           Cite = models.ForeignKey(Cite, on_delete=models.SET)
-           nb_logts = models.PositiveIntegerField()
-           nb_etage = models.PositiveIntegerField()
-           date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True) 
+           lib_Batiment = models.CharField(max_length=120,db_column='lib_Batiment')
+           Cite = models.ForeignKey(Cite, on_delete=models.SET,db_column='Cite_id')
+           nb_logts = models.PositiveIntegerField(db_column='nb_logts')
+           nb_etage = models.PositiveIntegerField(db_column='nb_etage')
+           date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True,db_column='date_joined') 
 
            def __str__(self):
                  return self.lib_Batiment
@@ -54,13 +54,13 @@ class Batiment (models.Model):
                   managed = False 
           
 class Occupant (models.Model):
-       oc_id  = models.PositiveIntegerField(unique=True)
-       nom_oc = models.CharField(max_length=120)
-       prenom_oc = models.CharField(max_length=120)
-       date_naiss = models.DateTimeField(null=True)
-       lieu_naiss=models.CharField(max_length=120)
+       oc_id  = models.PositiveIntegerField(unique=True,db_column='oc_id')
+       nom_oc = models.CharField(max_length=120,db_column='nom_oc')
+       prenom_oc = models.CharField(max_length=120,db_column='prenom_oc')
+       date_naiss = models.DateTimeField(null=True,db_column='date_naiss')
+       lieu_naiss=models.CharField(max_length=120,db_column='lieu_naiss')
 
-       created_at = models.DateTimeField(auto_now_add=True)
+       created_at = models.DateTimeField(auto_now_add=True,db_column='created_at')
 
        def __str__(self):
                  return self.nom_oc
@@ -70,16 +70,16 @@ class Occupant (models.Model):
 
 
 class Contrat(models.Model):
-    occupant = models.ForeignKey(Occupant, on_delete=models.SET)
-    date_cnt = models.DateTimeField(null=True)
-    date_strt_loyer = models.DateTimeField(null=True)
-    loyer = models.FloatField()
-    charge = models.CharField(max_length=120)
-    mnt_tva = models.FloatField()
+    occupant = models.ForeignKey(Occupant, on_delete=models.SET,db_column='occupant_id')
+    date_cnt = models.DateTimeField(null=True,db_column='date_cnt')
+    date_strt_loyer = models.DateTimeField(null=True,db_column='date_strt_loyer')
+    loyer = models.FloatField(db_column='loyer')
+    charge = models.CharField(max_length=120,db_column='charge')
+    mnt_tva = models.FloatField(db_column='mnt_tva')
     
    
     
-    total_of_month = models.FloatField(default=0)
+    total_of_month = models.FloatField(default=0,db_column='total_of_month')
   #siglaler add to changer total 
     def __str__(self):
                  return self.occupant.nom_oc
@@ -112,13 +112,13 @@ def update_total_of_month(sender, instance, **kwargs):
        sender.objects.filter(id=instance.id).update(total_of_month=total)
 
 class Logement (models.Model):
-        batiment = models.ForeignKey(Batiment, on_delete=models.SET)
-        contrat = models.ForeignKey(Contrat, on_delete=models.SET)
-        surface=  models.FloatField( default='m2')
-        prix_logement=  models.FloatField()
-        type_logement=  models.CharField(max_length=120)
+        batiment = models.ForeignKey(Batiment, on_delete=models.SET,db_column='batiment_id')
+        contrat = models.ForeignKey(Contrat, on_delete=models.SET,db_column='contrat_id')
+        surface=  models.FloatField( default='m2',db_column='surface')
+        prix_logement=  models.FloatField(db_column='prix_logement')
+        type_logement=  models.CharField(max_length=120,db_column='type_logement')
 
-        created_at = models.DateTimeField(auto_now_add=True)
+        created_at = models.DateTimeField(auto_now_add=True,db_column='created_at')
         def __str__(self):
                  return self.contrat.occupant.nom_oc
         class Meta:
@@ -126,13 +126,13 @@ class Logement (models.Model):
                   managed = False 
 
 class Consultation (models.Model):
-                logement = models.ForeignKey(Logement, on_delete=models.SET)
-                occupant = models.ForeignKey(Occupant, on_delete=models.SET)
-                unite = models.ForeignKey(Unite, on_delete=models.SET)
+                logement = models.ForeignKey(Logement, on_delete=models.SET,db_column='logement_id')
+                occupant = models.ForeignKey(Occupant, on_delete=models.SET,db_column='occupant_id')
+                unite = models.ForeignKey(Unite, on_delete=models.SET,db_column='unite_id')
 
-                mois=models.PositiveIntegerField()
-                created_at = models.DateTimeField(auto_now_add=True)
-                total =models.FloatField()
+                mois=models.PositiveIntegerField(db_column='mois')
+                created_at = models.DateTimeField(auto_now_add=True,db_column='created_at')
+                total =models.FloatField(db_column='total')
                 
                 def __str__(self):
                     return self.occupant.nom_oc

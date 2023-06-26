@@ -30,13 +30,14 @@ app_name = 'opgi'
 
 urlpatterns = [
             path('' ,views.home, name='home'),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('login/', CustomLoginView.as_view(), name='login'),
 
     path('admin/', admin.site.urls),
         path('service_contentieux/', include('chat.urls')),
         path('accounts/', include('accounts.urls')),
         path('recouvrement/', include('recouvrement.urls')),
     path('search/',include("search.urls")),
+   
 
 ]
 if settings.DEBUG:

@@ -3,6 +3,27 @@ from django.db.models import Q
 from collections import defaultdict
 from data.models import *
 from .filters import *
+from datetime import datetime
+
+def calculer_dette(occupant):
+    now = datetime.now()
+
+    consultation_months_sum = 0
+
+    for consultation in Consultation.objects.filter(occupant=occupant):
+        consultation_months_sum += consultation.mois
+        print("consultation_months_sum",consultation_months_sum)
+    contrat_values = Contrat.objects.get(id=occupant)
+    diff = (now.year - contrat_values.date_strt_loyer.year) * 12 + (now.month - contrat_values.date_strt_loyer.month)
+    mois_diff= (diff - consultation_months_sum)
+    
+    print("mois_diff",mois_diff)
+    montant_dette = contrat_values.total_of_month * mois_diff
+
+    
+    print("montant_dette :::::::",montant_dette)
+    return montant_dette,mois_diff
+
 
 def search(queryset, search_term=None):
     """

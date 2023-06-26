@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from .views import UniteAutocomplete
 
 app_name = 'recouvrement'
 
@@ -19,6 +20,9 @@ urlpatterns = [
 
     path('montant_mensuel_updates/<str:unit>/', views.montant_mensuel_updates, name='montant_mensuel_updates'),
     path('montant_mensuel_updates_anne/<str:unit>/<int:anne>/', views.montant_mensuel_updates_anne, name='montant_mensuel_updates_anne'),
+    path('chart_view/', views.chart_view, name='chart_view'),
+    path('unite-autocomplete/', UniteAutocomplete.as_view(), name='unite-autocomplete'),
+    path('MontantMensuel_views/', views.MontantMensuel_views, name='MontantMensuel_views'),
 
-    
+
 ]

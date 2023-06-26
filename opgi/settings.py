@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+        'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +47,7 @@ INSTALLED_APPS = [
  'accounts',
     'django_filters',
 'recouvrement',
-'search',
+'search.apps.SearchConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +83,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                                 'chat.context_processors.notification_count',
                                 'recouvrement.context_processors.notification_count_recouvrement',
+                                'recouvrement.context_processors.montant_context_processor',
+                                'recouvrement.context_processors.chart_view',
 
             ],
            'libraries':{
@@ -107,7 +111,7 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'opgi_test', 
+        'NAME': 'opgi', 
         'USER': 'postgres',
         'PASSWORD': 'meftouh1991',
         'HOST': '127.0.0.1', 

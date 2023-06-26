@@ -22,29 +22,7 @@
                           <form class="row gy-2 gx-3 align-items-center">
                               <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search par nom et par prénom " aria-label="Search">
                               
-                              <div class="row g-2">
-                                  <div class="col-sm">
-                                      {% if myFilter.form.min_loyer.errors %}
-                                          <label for="{{ myFilter.form.min_loyer.id_for_label }}" style="color:red;">Montant Min:</label>
-                                          {{ myFilter.form.min_loyer }}
-                                          <p style="color:red;">{{ myFilter.form.min_loyer.errors|join:", " }}</p>
-                                      {% else %}
-                                          <label for="{{ myFilter.form.min_loyer.id_for_label }}">Montant Min:</label>
-                                          {{ myFilter.form.min_loyer }}
-                                      {% endif %}
-                                  </div>
-                                  <div class="col-sm">
-                                      {% if myFilter.form.max_loyer.errors %}
-                                          <label for="{{ myFilter.form.max_loyer.id_for_label }}" style="color:red;">Montant Max:</label>
-                                          {{ myFilter.form.max_loyer }}
-                                          <p style="color:red;">{{ myFilter.form.max_loyer.errors|join:", " }}</p>
-                                      {% else %}
-                                          <label for="{{ myFilter.form.max_loyer.id_for_label }}">Montant Max:</label>
-                                          {{ myFilter.form.max_loyer }}
-                                      {% endif %}
-                                  </div>
-                                  
-                              </div>
+                             
                               
                               <div class="row g-2">
                                   <div class="col-sm">

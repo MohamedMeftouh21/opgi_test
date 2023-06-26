@@ -7,6 +7,7 @@ from search.utils import *
 from django.contrib.auth.decorators import login_required
 from accounts.decorators import unauthenticated_user, allowed_users, admin_only
 from django.views.decorators.cache import cache_control
+from search.models import *
 
 @login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -61,6 +62,25 @@ def occupant_detail(request, pk):
         contrats = Contrat.objects.filter(occupant=occupant)
         for contrat in contrats:
             logements= Logement.objects.filter(contrat=contrat)
+
+        montant_dette,mois_diff = calculer_dette(pk)
+        montant_dette_plus = abs(montant_dette)
+        print("montant_dette_plus",montant_dette_plus)
+
+        if montant_dette <= 0:
+            status = 'En règle'
+        elif montant_dette >0:
+            status = 'En dette'
+      
+
+        print("montant_dette",montant_dette)
+        print(status)
+        if mois_diff <=0:
+                mois_diffabs= abs(mois_diff)
+                print("mois_diff",mois_diff)
+        else :
+                mois_diffabs= abs(mois_diff)
+                print("mois_diff",mois_diff)
         context = {
         'service': 'Service Recouvrement',
         'title': 'Dashbord',
@@ -68,6 +88,10 @@ def occupant_detail(request, pk):
         'contrats': contrats,
         'logements': logements,
         'occupant': occupant,
+        'montant_dette':montant_dette,
+        'status':status,
+        'mois_diffabs':mois_diffabs,
+        'montant_dette_plus':montant_dette_plus
         }
         return render(request, "service_recouvrement/occupant_detail.html", context=context)
     
@@ -75,23 +99,36 @@ def occupant_detail(request, pk):
         return redirect('home')
     else : 
         consultation = get_object_or_404(Consultation, pk = pk)
-
         total_months = Consultation.objects.filter(occupant=consultation.occupant).aggregate(Sum('mois'))['mois__sum'] or 0
-        montant_dette = consultation.calculer_dette()
-        montant_dette=abs(montant_dette)
+
+        """"
+        occupant2 = Occupant.objects.get(id=consultation.occupant.id)
+
+        print("dette:::",occupant2)
+        occupant2 = Occupant.objects.get(id=consultation.occupant.id)
+        montant_dettes = Dette.objects.filter(occupant=occupant2)
+
+
+        for dette in montant_dettes:
+              montant_dette=dette.montant_dette
+             # print("Occupant: ", dette.occupant)
+             # print("Montant dette: ", dette.montant_dette)
+
+        """
         mois_entiers = int((consultation.created_at - consultation.logement.contrat.date_strt_loyer).total_seconds() / 2628000) - total_months
 
-        if mois_entiers <= 0 :
-                                mois_entiers = 0
-                                montant_dette = 0
-        
-        if montant_dette == 0:
+        montant_dette,mois_diff = calculer_dette(consultation.occupant.id)
+        mois_diff_plus=abs(mois_diff)
+        montant_dette_plus = abs(montant_dette)
+        print("montant_dette_plus",montant_dette_plus)
+        if montant_dette <= 0:
             status = 'En règle'
-        elif montant_dette > consultation.logement.contrat.total_of_month:
+            
+        elif montant_dette >0:
             status = 'En dette'
-        else :
-            status = 'En dette'
+      
 
+       # print("montant_dettesssss",montant_dette)
         archives = archive_consultations_mois(consultation.occupant.id)
 
         archivesyears,total_dettes = archive_consultations_annee(consultation.occupant.id)
@@ -103,16 +140,18 @@ def occupant_detail(request, pk):
         'subtitle': "Occupant Detail",
         'consultation': consultation,
         'archives': archives,
-        'archivesyears': archivesyears,
-        'montant_dette': montant_dette,
-        'total_dettes': total_dettes,
-        'mois_entiers': mois_entiers,
-        'total_months': total_months,
-        'status': status,
+       'archivesyears': archivesyears,
+       'total_dettes': total_dettes,
+       'mois_entiers': mois_entiers,
+       'total_months': total_months,
+              'status': status,
+       'montant_dette': montant_dette,
+       'montant_dette_plus':montant_dette_plus,
+       'mois_diff_plus':mois_diff_plus,
+
     }
 
     return render(request, "service_recouvrement/occupant_detail.html", context=context)
-
 
 
 @login_required(login_url='login')

@@ -25,7 +25,6 @@ def in_group(user, group_name):
 
 # Create your views here.
 @unauthenticated_user
-
 def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -54,6 +53,8 @@ def loginPage(request):
 
 def abcd(request):
 	            return HttpResponse("Cannot sanitize form data")
+
+
 def logoutUser(request):
 	logout(request)
 	return redirect('accounts:login')
