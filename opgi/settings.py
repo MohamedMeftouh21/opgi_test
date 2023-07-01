@@ -106,19 +106,26 @@ TEMPLATES = [
 ASGI_APPLICATION = 'opgi.asgi.application'
 
 CHANNEL_LAYERS = {
-    'default':{
-        'BACKEND':'channels.layers.InMemoryChannelLayer'
-    }
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis://default:s9pxTcr7u3mMYfiXyLfq@containers-us-west-161.railway.app:7942")], # Update the URL here
+        },
+    },
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        #'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'JWtWeCJObnRW6fsBXZbS',
+        'HOST': 'containers-us-west-168.railway.app',
+        'PORT': '6978',
     }
 }
 
@@ -162,8 +169,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 
 STATIC_URL = 'static/'
 
