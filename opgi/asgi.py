@@ -3,7 +3,7 @@ import os
 from django.core.asgi import get_asgi_application
 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'canada.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'opgi.settings')
 
 asgi_application = get_asgi_application() #new
 
