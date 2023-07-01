@@ -1,0 +1,1 @@
+web: python manage.py migrate && python manage.py collectstatic  && python -m gunicorn opgi.asgi:application -k uvicorn.workers.UvicornWorker
