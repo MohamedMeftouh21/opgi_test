@@ -23,6 +23,13 @@ urlpatterns = [
     path('chart_view/', views.chart_view, name='chart_view'),
     path('unite-autocomplete/', UniteAutocomplete.as_view(), name='unite-autocomplete'),
     path('MontantMensuel_views/', views.MontantMensuel_views, name='MontantMensuel_views'),
+   path('display_unites/', views.display_unites, name='display_unites'),
 
+   path('montant_mensuel/<str:unit>/', views.montant_mensuel_chart, name='montant_mensuel_chart'),#### Madani
+    path('montant_mensuel_chart_par_anne/<str:unit>/<int:anne>/', views.montant_mensuel_chart_par_anne, name='montant_mensuel_chart_par_anne'),#### Madani
+
+ path('consultations_views/', views.chart_view_consultations_par_unit, name='consultations_views'),#### Madani
+   path('montant_mensuel/<str:unit>/', views.montant_mensuel_chart, name='montant_mensuel_chart'),#### Madani
+       path('montant_mensuel_chart_par_anne/<str:unit>/<int:anne>/', views.montant_mensuel_chart_par_anne, name='montant_mensuel_chart_par_anne'),#### Madani
 
 ]

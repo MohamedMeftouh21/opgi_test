@@ -4,7 +4,11 @@ from .models import Notification_chef_service
 import datetime
 from .models import MontantMensuel
 from django.db.models import F, Sum
-
+from data.models import Consultation,Unite
+from django.db.models import F, Sum
+from django.db.models import Count
+import datetime
+from django.db.models.functions import TruncDate
 def notification_count_recouvrement(request):
     notifications = Notification_chef_service.objects.filter(read=False).order_by('-created_at')
     count = notifications.count()
@@ -68,5 +72,27 @@ def chart_view(request):
         'selected_mois': mois,
         'selected_annee': annee,
         'lib_unit_values': lib_unit_values,
+    }
+    return context
+
+def chart_view_consultations_par_unit(request):
+    consultation_data = Consultation.objects.annotate(date=TruncDate('created_at'))
+
+   
+
+    consultation_data = consultation_data.values('unite__lib_unit').annotate(consultation_count=Count('id')).order_by('unite__lib_unit')
+
+
+    total_consultations = 0
+
+    for data in consultation_data:
+
+        total_consultations += data['consultation_count']
+
+    lib_unit_values = [data['unite__lib_unit'] for data in consultation_data]
+
+    context = {
+        
+        'total_consultations': total_consultations,
     }
     return context

@@ -199,16 +199,16 @@ def service_contentieux(request):
         if status:
             dossiers = Service_contentieux_dossier.objects.filter(
                 dossier__in=occupant_ids,
-                status=status
+                status=status,created_by=request.user.username
             )
         else:
             dossiers = Service_contentieux_dossier.objects.filter(
-                dossier__in=occupant_ids
+                dossier__in=occupant_ids,created_by=request.user.username
             )
     else:
         if status:
             dossiers = Service_contentieux_dossier.objects.filter(
-                status=status
+                status=status,created_by=request.user.username
             )
         else:
             dossiers = Service_contentieux_dossier.objects.all()
@@ -256,8 +256,10 @@ def search_notification(request):
 
 def Occupant_settings(request,pk):
         
-    
+
+    if Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk).exists():
         if request.method == 'POST':
+           Service_contentieux_dossier_archive.objects.create(created_by=request.user.username, dossier=pk)
            Service_contentieux_dossier.objects.filter(created_by=request.user.username, dossier=pk).delete()
            
            return redirect('home')
@@ -266,6 +268,14 @@ def Occupant_settings(request,pk):
         context = {'item':pk}
 
         return render(request, 'service_contentieux/Occupant_settings.html',context)
+    else :
+        occupant_settings_users = Service_contentieux_dossier.objects.filter(dossier=pk)
+        context = {
+            'occupant_settings_users': occupant_settings_users,
+            'item':pk,
+        }
+        return render(request, 'service_contentieux/Occupant_settings_user.html',context)
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['service_contentieux'])
@@ -285,3 +295,48 @@ def generate_pdf(request, oc_id):
     if pisa_status.err:
         return HttpResponse('An error occurred while creating the PDF')
     return response
+
+
+
+def count_dashboard(request):
+     
+     # Filter instances of Service_contentieux_dossier by created_by
+    created_by = request.user.username
+    print("created_by",created_by)
+    count = Service_contentieux_dossier.objects.filter(created_by=created_by).count()
+    context = {
+        'count': count
+    }
+    return render(request, 'service_contentieux/count_dashboard.html',context)
+
+def search_archive(request):
+    if request.method == 'GET':
+        search_query = request.GET.get('q')  # Obtains the search query value
+
+        if search_query:
+            try:
+                search_query = int(search_query)  # Try to convert the search query to an integer
+                occupants = Occupant.objects.filter(
+                    oc_id=search_query
+                )
+            except ValueError:
+                occupants = Occupant.objects.filter(
+                    Q(oc_id__icontains=search_query) |
+                    Q(nom_oc__icontains=search_query) |
+                    Q(prenom_oc__icontains=search_query)
+                )
+
+            occupant_ids = [occupant.oc_id for occupant in occupants]
+
+            results = Service_contentieux_dossier_archive.objects.filter(dossier__in=occupant_ids)
+            occupants_in_results = occupants.filter(oc_id__in=occupant_ids)
+
+            return render(request, 'service_contentieux/search_archive.html', {'results': results,'occupants': occupants_in_results})
+
+    return render(request, 'service_contentieux/search_archive.html')
+
+def archive_list_by_user(request, oc_id):
+    occupant = get_object_or_404(Occupant, oc_id=oc_id)
+    results = Service_contentieux_dossier_archive.objects.filter(dossier=occupant.oc_id)
+    return render(request, 'service_contentieux/archive_list_by_user.html', {'occupant': occupant, 'results': results})
+

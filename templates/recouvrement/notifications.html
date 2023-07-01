@@ -1,11 +1,11 @@
 {% extends '../opgi_system/layout.html' %}
 {% block content %}
 {% load static %}
+<h1>Notifications</h1>
 
 	<ul id="notification-list">
 		<div class="row notification-container">
    
-			<h1>Notifications</h1>
 			<ul id="notification-list">
 			  {% if notifications %}
 				<ul>
@@ -25,10 +25,14 @@
 		  </div>
 	</ul>
 	<script>
-		const socket1 = new WebSocket('ws://localhost:8000/ws/chef_service/' );
-		socket1.onopen = function (e) {
-		  console.log('Connection established');
-		};
+		
+		const host = window.location.host;
+    const protocol = window.location.protocol.replace('http', 'ws');
+    const socket1 = new WebSocket(protocol + '//' + host + '/ws/chef_service/');
+    socket1.onopen = function (e) {
+      console.log('Connection established');
+    };
+	
 	  
 		socket1.onmessage = function(event) {
 		  var data = JSON.parse(event.data);

@@ -15,6 +15,8 @@ from django.template.loader import get_template
 from .models import MontantMensuel
 from dal import autocomplete
 from data.models import *
+from django.db.models.functions import TruncDate
+from django.db.models import Count
 
 import datetime
 
@@ -249,7 +251,179 @@ class UniteAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
 def MontantMensuel_views(request):
             return render(request, 'recouvrement/montantMensuel_views.html')
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
+def display_unites(request):
+    query = request.GET.get('query', '')
+    unites = Unite.objects.filter(lib_unit__icontains=query)
+    context = {'unites': unites, 'query': query}
+    return render(request, 'recouvrement/display_unites.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
+def montant_mensuel_chart(request, unit):
+    if Unite.objects.filter(lib_unit=unit).exists():
+        now = datetime.datetime.now()
+        mois_actuel = now.month
+        annee_actuelle = now.year
+        montants = MontantMensuel.objects.filter(unite__lib_unit=unit, mois=mois_actuel, annee=annee_actuelle)
+
+        # Get the list of distinct years for the given unit
+        years = MontantMensuel.objects.filter(unite__lib_unit=unit).values_list('annee', flat=True).distinct()
+
+        for montant in montants:
+            montant.percentage = round((montant.total_of_month / montant.total) * 100, 2)
+
+        # Prepare the data for the chart
+        chart_labels = [f"{montant.mois}/{montant.annee}" for montant in montants]
+        chart_data_total = [montant.total for montant in montants]
+        chart_data_total_of_month = [montant.total_of_month for montant in montants]
+
+        context = {
+            "montants": montants,
+            "unit": unit,
+            "years": years,
+            "chart_labels": chart_labels,
+            "chart_data_total": chart_data_total,
+            "chart_data_total_of_month": chart_data_total_of_month,
+        }
+        return render(request, 'recouvrement/montant_mensuel_chart.html', context)
+    else:
+        return redirect('home')
+    
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
+def montant_mensuel_chart_par_anne(request, unit, anne):
+ 
+    if Unite.objects.filter(lib_unit=unit).exists() and MontantMensuel.objects.filter(annee=anne).exists() :
+
+        # Get the distinct months for the given year and unit
+        mois = MontantMensuel.objects.filter(unite__lib_unit=unit, annee=anne).order_by('mois').values_list('mois', flat=True).distinct()
+
+        # Get the montants for the given year, unit, and months
+        montants = MontantMensuel.objects.filter(unite__lib_unit=unit, annee=anne, mois__in=mois).order_by('mois')
+        total_all_months = montants.aggregate(total=Sum('total_of_month'))['total']
+
+        for montant in montants:
+            montant.percentage = round((montant.total_of_month / montant.total) * 100, 2)
+        
+        # Prepare the data for the chart
+        chart_labels = [f"{montant.mois}/{montant.annee}" for montant in montants]
+        chart_data_total = [montant.total for montant in montants]
+        chart_data_total_of_month = [montant.total_of_month for montant in montants]
+
+        context = {
+            "data_montant_mensuel": montants,
+            "unit": unit,
+            "anne": anne,
+            "total_all_months": total_all_months,
+            "chart_labels": chart_labels,
+            "chart_data_total": chart_data_total,
+            "chart_data_total_of_month": chart_data_total_of_month,
+
+        }
+        return render(request, 'recouvrement/montant_mensuel_chart_par_annee.html', context)
+    else :
+        return redirect('home')
+    
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
+def chart_view_consultations_par_unit(request):
+
+    consultation_data = Consultation.objects.annotate(date=TruncDate('created_at'))
+
+   
+
+    consultation_data = consultation_data.values('unite__lib_unit').annotate(consultation_count=Count('id')).order_by('unite__lib_unit')
+
+
+    total_consultations = 0
+
+    for data in consultation_data:
+
+        total_consultations += data['consultation_count']
+
+    lib_unit_values = [data['unite__lib_unit'] for data in consultation_data]
+
+    context = {
+        
+        'total_consultations': total_consultations,
+    }
+
+    return render(request, 'recouvrement/consultations_views.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
+def montant_mensuel_chart(request, unit):
+    if Unite.objects.filter(lib_unit=unit).exists():
+        now = datetime.datetime.now()
+        mois_actuel = now.month
+        annee_actuelle = now.year
+        montants = MontantMensuel.objects.filter(unite__lib_unit=unit, mois=mois_actuel, annee=annee_actuelle)
+
+        # Get the list of distinct years for the given unit
+        years = MontantMensuel.objects.filter(unite__lib_unit=unit).values_list('annee', flat=True).distinct()
+
+        for montant in montants:
+            montant.percentage = round((montant.total_of_month / montant.total) * 100, 2)
+
+        # Prepare the data for the chart
+        chart_labels = [f"{montant.mois}/{montant.annee}" for montant in montants]
+        chart_data_total = [montant.total for montant in montants]
+        chart_data_total_of_month = [montant.total_of_month for montant in montants]
+
+        context = {
+            "montants": montants,
+            "unit": unit,
+            "years": years,
+            "chart_labels": chart_labels,
+            "chart_data_total": chart_data_total,
+            "chart_data_total_of_month": chart_data_total_of_month,
+        }
+        return render(request, 'recouvrement/montant_mensuel_chart.html', context)
+    else:
+        return redirect('home')
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['service_recouvrement'])
+def montant_mensuel_chart_par_anne(request, unit, anne):
+ 
+    if Unite.objects.filter(lib_unit=unit).exists() and MontantMensuel.objects.filter(annee=anne).exists() :
+
+        # Get the distinct months for the given year and unit
+        mois = MontantMensuel.objects.filter(unite__lib_unit=unit, annee=anne).order_by('mois').values_list('mois', flat=True).distinct()
+
+        # Get the montants for the given year, unit, and months
+        montants = MontantMensuel.objects.filter(unite__lib_unit=unit, annee=anne, mois__in=mois).order_by('mois')
+        total_all_months = montants.aggregate(total=Sum('total_of_month'))['total']
+
+        for montant in montants:
+            montant.percentage = round((montant.total_of_month / montant.total) * 100, 2)
+        
+        # Prepare the data for the chart
+        chart_labels = [f"{montant.mois}/{montant.annee}" for montant in montants]
+        chart_data_total = [montant.total for montant in montants]
+        chart_data_total_of_month = [montant.total_of_month for montant in montants]
+
+        context = {
+            "data_montant_mensuel": montants,
+            "unit": unit,
+            "anne": anne,
+            "total_all_months": total_all_months,
+            "chart_labels": chart_labels,
+            "chart_data_total": chart_data_total,
+            "chart_data_total_of_month": chart_data_total_of_month,
+
+        }
+        return render(request, 'recouvrement/montant_mensuel_chart_par_annee.html', context)
+    else :
+        return redirect('home')

@@ -101,7 +101,7 @@
                         
 
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                            href="{% url 'recouvrement:MontantMensuel_views'%}" aria-expanded="false"><i
+                            href="{% url 'recouvrement:display_unites'%}" aria-expanded="false"><i
                                 class="mdi mdi-logout m-r-5 m-l-5"></i><span class="hide-menu">Constatation</span></a></li>
                     {% endif %}
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -121,10 +121,14 @@
 
 </aside>
 <script>
-    const socket1 = new WebSocket('ws://localhost:8000/ws/chef_service/' );
+
+    const host = window.location.host;
+    const protocol = window.location.protocol.replace('http', 'ws');
+    const socket1 = new WebSocket(protocol + '//' + host + '/ws/chef_service/');
     socket1.onopen = function (e) {
       console.log('Connection established');
     };
+    
   
     socket1.onmessage = function(event) {
       var data = JSON.parse(event.data);

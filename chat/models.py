@@ -21,9 +21,7 @@ from dateutil.relativedelta import relativedelta
 class Service_contentieux_settings(models.Model):
      montant_fix_par_opgi=models.FloatField()
      
-     class Meta:
-                  db_table = 'chat_service_contentieux_settings'
-                  managed = False 
+   
     
      
 class Notification(models.Model):
@@ -38,9 +36,7 @@ class Notification(models.Model):
         
     def __str__(self):
         return self.message
-    class Meta:
-                  db_table = 'chat_notification'
-                  managed = False 
+   
     
 class Service_contentieux_dossier(models.Model):
     STATUS_CHOICES = (
@@ -51,10 +47,14 @@ class Service_contentieux_dossier(models.Model):
     dossier = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    class Meta:
-                  db_table = 'chat_service_contentieux_dossier'
-                  managed = False 
-           
+
+
+class Service_contentieux_dossier_archive(models.Model):
+         dossier = models.CharField(max_length=255)
+         created_by = models.CharField(max_length=255)
+         created_at = models.DateTimeField(auto_now_add=True)
+
+
 
 @receiver(post_save, sender=Notification)
 def send_notification(sender, instance, **kwargs):

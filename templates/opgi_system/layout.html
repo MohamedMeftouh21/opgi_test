@@ -49,6 +49,15 @@
                         <div class="card">
                             <div class="card-body">
                                 {% block content %}
+                                {% if user|is_member_of_group:'service_contentieux' %}
+                                {% include '../service_contentieux/count_dashboard.html' %}
+
+
+                                {% elif user|is_member_of_group:'service_recouvrement' %} 
+                                {% include '../recouvrement/consultations_views.html' %}
+
+                                {% endif %}
+
                                 {% endblock %}
                             </div>
                         </div>

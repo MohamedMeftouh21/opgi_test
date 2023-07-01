@@ -73,6 +73,12 @@
             <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                     href="{% url 'chat:service_contentieux' %}" aria-expanded="false"><i class="mdi mdi-border-all"></i><span
                         class="hide-menu">Service contentieux</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'chat:search_archive' %}" aria-expanded="false"><i class="mdi mdi-border-all"></i><span
+                                class="hide-menu">Archive</span></a></li>
+
+
+                        
                         {% elif user|is_member_of_group:'service_recouvrement' %} 
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                             href="{% url 'recouvrement:recouvrement' %}" aria-expanded="false"><i class="mdi mdi-border-all"></i><span
@@ -122,7 +128,9 @@
 </aside>
 
 <script>
-    const socket2 = new WebSocket('ws://localhost:8000/ws/test/' );
+    const host = window.location.host;
+    const protocol = window.location.protocol.replace('http', 'ws');
+    const socket2 = new WebSocket(protocol + '//' + host + '/ws/test/');
     socket2.onopen = function (e) {
       console.log('Connection established');
     };

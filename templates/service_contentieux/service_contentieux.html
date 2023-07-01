@@ -2,7 +2,7 @@
 {% block content %}
 {% load static %}
 <div class="card-body">
-<h1> Recherche</h1>
+<h1> Recherche  dossier en cours de traitement juridique</h1>
 <form method="get" >
   <div class="d-flex align-items-center">
     <input class="form-control mr-sm-1" type="text" name="keyword" placeholder="Search...">
@@ -20,7 +20,10 @@
 {% if dossiers %}
 <br>
 <br>
-    <h2>Dossiers</h2>
+    <h2> Les Dossiers</h2>
+</br>
+
+
     <ul>
         {% for occupant_name in occupant_names %}
 

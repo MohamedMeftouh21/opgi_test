@@ -32,8 +32,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+        'channels',
+
         'dal',
     'dal_select2',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,11 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
      'import_export',
      'data',
-         'channels',
     'chat.apps.ChatConfig',
  'accounts',
     'django_filters',
-'recouvrement',
+'recouvrement.apps.RecouvrementConfig',
 'search.apps.SearchConfig',
 ]
 
@@ -85,6 +87,8 @@ TEMPLATES = [
                                 'recouvrement.context_processors.notification_count_recouvrement',
                                 'recouvrement.context_processors.montant_context_processor',
                                 'recouvrement.context_processors.chart_view',
+                                'chat.context_processors.count_dashboard',
+                                'recouvrement.context_processors.chart_view_consultations_par_unit',
 
             ],
            'libraries':{
@@ -96,7 +100,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'opgi_service.asgi.application'
+ASGI_APPLICATION = 'opgi.asgi.application'
 
 CHANNEL_LAYERS = {
     'default':{
@@ -110,14 +114,11 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'opgi', 
-        'USER': 'postgres',
-        'PASSWORD': 'meftouh1991',
-        'HOST': '127.0.0.1', 
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

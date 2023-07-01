@@ -10,3 +10,4 @@ admin.site.register(Notification)
 admin.site.register(Service_contentieux_settings)
 
 admin.site.register(Service_contentieux_dossier)
+admin.site.register(Service_contentieux_dossier_archive)
