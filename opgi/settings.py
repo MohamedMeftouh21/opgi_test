@@ -102,6 +102,7 @@ TEMPLATES = [
         },
     },
 ]
+#WSGI_APPLICATION = 'opgi.wsgi.application'
 
 ASGI_APPLICATION = 'opgi.asgi.application'
 
