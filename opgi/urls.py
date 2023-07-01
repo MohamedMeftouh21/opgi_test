@@ -25,10 +25,15 @@ from django.conf import settings
 from .views import *
 from . import views
 from django.contrib.auth import views as auth_views
+from django.urls import re_path as url
+from django.views.static import serve
 
 app_name = 'opgi'
 
 urlpatterns = [
+        url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+
+  url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
             path('' ,views.home, name='home'),
     path('login/', CustomLoginView.as_view(), name='login'),
 
