@@ -426,3 +426,9 @@ def montant_mensuel_chart_par_anne(request, unit, anne):
         return render(request, 'recouvrement/montant_mensuel_chart_par_annee.html', context)
     else :
         return redirect('home')
+    
+
+
+    ###########
+    #####
+    ##################
