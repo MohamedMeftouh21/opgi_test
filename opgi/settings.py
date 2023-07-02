@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-hgz-huuln209plc=v8v)ny4ve3=&1$j%#%ey=bx)3abmv1%7c#
 DEBUG = False
 
 ALLOWED_HOSTS = ['opgitest-production.up.railway.app', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://opgitest-production.up.railway.app/']
+CSRF_TRUSTED_ORIGINS = ['https://opgitest-production.up.railway.app']
 
 # Application definition
 
