@@ -105,14 +105,18 @@ def my_model_post_save(sender, instance, created, **kwargs):
           print("Occupant name:", contrat.occupant.nom_oc)
           print("Number of months since date_strt_loyer:", months)
           print("Total difference between months and mois for associated Consultation objects:", consultation_months_sum)
-          if not Notification.objects.filter(message=contrat.occupant.oc_id,read =False).exists():
+          if not Notification.objects.filter(message=contrat.occupant.oc_id, read=False).exists() and not Service_contentieux_dossier.objects.filter(dossier=contrat.occupant.oc_id).exists():
             instances.append(Notification(message=contrat.occupant.oc_id,nom_oc=contrat.occupant.nom_oc,prenom_oc=contrat.occupant.prenom_oc))
             if instances:
                 Notification.objects.bulk_create(instances)
             else:
                 print("No instances created.")
-          else :
-                                                   print("No instances created.")
+          elif Notification.objects.filter(message=contrat.occupant.oc_id, read=False).exists() and Service_contentieux_dossier.objects.filter(dossier=contrat.occupant.oc_id, status='terminer').exists():
+                    instances.append(Notification(message=contrat.occupant.oc_id,nom_oc=contrat.occupant.nom_oc,prenom_oc=contrat.occupant.prenom_oc))
+                    if instances:
+                        Notification.objects.bulk_create(instances)
+                    else:
+                       print("No instances created.")
         
     else:
         print("px is False",(  months - consultation_months_sum ) * contrat.total_of_month)
@@ -120,4 +124,3 @@ def my_model_post_save(sender, instance, created, **kwargs):
         print("Total difference between months and mois for associated Consultation objects:", consultation_months_sum)
     # Print the results for this Contrat and display px
    
-               

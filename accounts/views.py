@@ -55,6 +55,8 @@ def abcd(request):
 	            return HttpResponse("Cannot sanitize form data")
 
 
+#@login_required(login_url='login')
+#@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logoutUser(request):
 	logout(request)
 	return redirect('accounts:login')
