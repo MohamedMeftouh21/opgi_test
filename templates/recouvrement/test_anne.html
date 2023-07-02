@@ -1,23 +1,6 @@
 {% extends '../opgi_system/layout.html' %}
 {% block content %}
 {% load static %}
-
-<style>
-  .contain {
-      position: relative;
-  }
-  
-  .sidebar {
-      position: absolute;
-      top: 0;
-      right: 0;
-  }
-</style>
-<div class="contain">
-  <a class="sidebar waves-effect waves-dark sidebar"
-                  href="{% url 'recouvrement:montant_mensuel_chart_par_anne' unit anne %}" aria-expanded="false"><i class="mdi mdi-chart-bar"></i><span
-                      class="hide-menu"> Statistique</span></a>
-  </div>
     <h1>Montant Mensuel </h1>
 <p>Unité: {{ unit }}</p>
 <p>Annee: {{ anne }}</p>
