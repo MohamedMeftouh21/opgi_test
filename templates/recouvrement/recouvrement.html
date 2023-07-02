@@ -2,24 +2,21 @@
 {% block content %}
 {% load static %}
 
-	<ul id="notification-list">
+	<ul >
 		<div class="row notification-container">
    
-			<h1> Les  Alertes des unités </h1>
-			<ul id="notification-list">
-			  {% if notifications %}
+			<h1> Les  Alertes des unités</h1>
+			<ul>
+
 				<ul>
-				{% for notification in notifications %}
-				  <li>{{ notification.unite }} {{ notification.created_at }}
-					<td><a  href="{% url 'recouvrement:generate_pdf' notification.id %}">voir plus  </a></td>
+				{% for notification_alert in notifications_alert %}
+				  <li>{{ notification_alert.unite }} {{ notification_alert.created_at }}
+					<td><a  href="{% url 'recouvrement:generate_pdf' notification_alert.id %}">voir plus  </a></td>
 
 				  </li>
 		  
 				{% endfor %}
 				</ul>
-			  {% else %}
-				<p>No notifications to display.</p>
-			  {% endif %}
 			</ul>
 		   
 		  </div>

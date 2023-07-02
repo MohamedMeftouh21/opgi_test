@@ -45,10 +45,9 @@ def notifications(request):
 @allowed_users(allowed_roles=['service_recouvrement'])
 
 def recouvrement(request):
-            notifications = Notification_chef_service.objects.filter(read=True).order_by('-created_at')
+            notifications_alert = Notification_chef_service.objects.filter(read=True).order_by('-created_at')
 
-            return render(request, 'recouvrement/recouvrement.html', {'notifications': notifications})
-
+            return render(request, 'recouvrement/recouvrement.html', {'notifications_alert': notifications_alert})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
