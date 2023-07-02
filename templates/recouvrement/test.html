@@ -14,7 +14,7 @@
   </style>
 <script>
 
-    var socket = new WebSocket(window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/ws/montant_mensuel_updates/{{ unit }}/' );
+        var socket = new WebSocket('ws://localhost:8000/ws/montant_mensuel_updates/{{ unit }}/' );
 
         socket.onmessage = function(e) {
             var data = JSON.parse(e.data);
@@ -65,6 +65,7 @@
 {% endif %}
 
 <body>
+    <div class="table-responsive">
     <table id="montant_mensuel_table">
         <thead>
             <tr>
@@ -93,4 +94,7 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+    
+
     {% endblock %}
