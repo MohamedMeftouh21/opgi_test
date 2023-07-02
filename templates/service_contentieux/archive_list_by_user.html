@@ -6,7 +6,7 @@
 
     <ul>
         {% for result in results %}
-            <li>  Dossier traité par:{{ result.created_by }},     Date: {{ result.created_at }}</li>
+            <li>  Dossier traité par:{{ result.created_by }},     Date fin de traitement: {{ result.created_at }}</li>
         {% empty %}
             <li>Aucune archive trouvée pour cet utilisateur</li>
         {% endfor %}
