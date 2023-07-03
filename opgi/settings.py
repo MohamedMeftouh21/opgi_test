@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-hgz-huuln209plc=v8v)ny4ve3=&1$j%#%ey=bx)3abmv1%7c#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['opgitest-production.up.railway.app', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://opgitest-production.up.railway.app']
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
+
 
 # Application definition
 
@@ -123,16 +123,12 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'JWtWeCJObnRW6fsBXZbS',
-        'HOST': 'containers-us-west-168.railway.app',
-        'PORT': '6978',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
 
 
 # Password validation
@@ -178,11 +174,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
-]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/Images')
