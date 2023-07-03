@@ -92,3 +92,4 @@ websocket==0.2.1
 websocket-client==1.5.3
 websockets==11.0.3
 django-autocomplete-light==3.9.7
+python-dotenv==1.0.0
