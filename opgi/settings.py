@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-hgz-huuln209plc=v8v)ny4ve3=&1$j%#%ey=bx)3abmv1%7c#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', '.now.sh']
 
 
 # Application definition
@@ -103,9 +103,9 @@ TEMPLATES = [
         },
     },
 ]
-#WSGI_APPLICATION = 'opgi.wsgi.application'
+WSGI_APPLICATION = 'opgi.wsgi.application'
 
-ASGI_APPLICATION = 'opgi.asgi.application'
+#ASGI_APPLICATION = 'opgi.asgi.application'
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
@@ -167,11 +167,9 @@ USE_TZ = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATIC_URL = 'static/'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
-
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/Images')
